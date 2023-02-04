@@ -1,0 +1,53 @@
+{{- if .Values.core.ingress.enable }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: core-ingress
+  labels:
+    {{- include "core.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.core.ingress.annotations | nindent 4 }}
+spec:
+  {{- if .Values.core.ingress.className }}
+  {{/* If this is set to an empty string it fails validation on K8s */}}
+  ingressClassName: {{ .Values.core.ingress.className | quote }}
+  {{- end }}
+
+  rules:
+    - host: {{ .Values.core.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gigo-core-service
+                port:
+                  name: "http"
+
+    {{- if .Values.core.ingress.wildcardHost }}
+    - host: {{ include "core.ingressWildcardHost" . | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gigo-core-service
+                port:
+                  name: "http"
+    {{- end }}
+
+  {{- if .Values.core.ingress.tls.enable }}
+  tls:
+    - hosts:
+        - {{ .Values.core.ingress.host | quote }}
+      secretName: {{ .Values.core.ingress.tls.secretName | quote}}
+    {{- if .Values.core.ingress.tls.wildcardSecretName }}
+    - hosts:
+        - {{ include "core.ingressWildcardHost" . | quote }}
+      secretName: {{ .Values.core.ingress.tls.wildcardSecretName | quote}}
+    {{- end }}
+  {{- end }}
+{{- end }}

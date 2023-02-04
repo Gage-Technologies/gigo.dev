@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ws-config
+  labels:
+    {{- include "ws.labels" . | nindent 4 }}
+data:
+  config: |-
+  {{ toYaml .Values.ws.config | nindent 4 }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gigo-ws
+  annotations: {{ toYaml .Values.ws.annotations | nindent 4}}
+  labels:
+    {{- include "ws.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.ws.autoscaling.enabled }}
+  replicas: {{ .Values.ws.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "ws.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.ws.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "ws.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: ws-provisioner
+      {{- with .Values.ws.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.ws.podSecurityContext | nindent 8 }}
+      containers:
+        - name: gigo-ws
+          securityContext:
+            {{- toYaml .Values.ws.securityContext | nindent 12 }}
+          image: "{{ .Values.ws.image.repository }}:{{ .Values.ws.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.ws.image.pullPolicy }}
+          args: ["-config", "/etc/gigo-ws/config.yml"]
+          volumeMounts:
+            - mountPath: /etc/gigo-ws
+              name: ws-config
+          ports:
+            - name: http
+              containerPort: {{ .Values.ws.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.ws.resources | nindent 12 }}
+      volumes:
+        - name: ws-config
+          configMap:
+            name: ws-config
+            items:
+              - key: config
+                path: config.yml
+      {{- with .Values.ws.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ws.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ws.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

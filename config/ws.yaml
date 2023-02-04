@@ -1,0 +1,42 @@
+provisioner:
+  # directory for the terraform binary
+  terraform_dir: /tmp/tfbin
+  # version of terraform to use
+  terraform_version: 1.3.7
+  # whether to overwrite the terraform binary silently
+  overwrite: true
+  # terraform provisioner backend
+  backend:
+    # 0 is used for local filesystem and 1 for s3 based storage
+    provisioner_backend_type: 1
+    # for s3 based storage
+    s3:
+      bucket: gigo-provisioner
+      region: us-east-1
+      access_key: gigo
+      secret_key: secret://gigo-wsbucket
+      endpoint: minio
+      use_ssl: false
+    # use an insecure version of s3 like a local minio deployment
+    insecure_s3: true
+# storage for persisting terraform modules
+module_storage:
+  engine: s3
+  s3:
+    bucket: gigo-provisioner
+    region: us-east-1
+    access_key: gigo
+    secret_key: secret://gigo-wsbucket
+    endpoint: minio
+server:
+  host: 0.0.0.0
+  port: 45246
+logger:
+  es:
+    elastic_nodes:
+      - "elastic"
+    username: gigo
+    elastic_pass: secret://gigo-elastic
+    index: gigo-ws
+    batch_size: 250
+    batch_time_millis: 1000

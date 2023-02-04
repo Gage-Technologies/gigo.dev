@@ -1,0 +1,59 @@
+{{- if .Values.core.service.enable }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gigo-core-service
+  labels:
+    {{- include "core.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.core.service.annotations | nindent 4 }}
+spec:
+  type: {{ .Values.core.service.type }}
+  sessionAffinity: {{ .Values.core.service.sessionAffinity }}
+  ports:
+    - name: "http"
+      port: {{ .Values.core.service.port }}
+      targetPort: "http"
+      protocol: TCP
+  {{- if eq "LoadBalancer" .Values.core.service.type }}
+  {{- with .Values.core.service.loadBalancerIP }}
+  loadBalancerIP: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.core.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . | quote }}
+  {{- end }}
+  {{- end }}
+  selector:
+    {{- include "core.selectorLabels" . | nindent 4 }}
+  {{- end }}
+
+{{- if .Values.ws.service.enable }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gigo-ws-service
+  labels:
+    {{- include "ws.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.ws.service.annotations | nindent 4 }}
+spec:
+  type: {{ .Values.ws.service.type }}
+  sessionAffinity: {{ .Values.ws.service.sessionAffinity }}
+  ports:
+    - name: "grpc"
+      port: {{ .Values.ws.service.port }}
+      targetPort: {{ .Values.ws.service.port }}
+      protocol: TCP
+  {{- if eq "LoadBalancer" .Values.ws.service.type }}
+  {{- with .Values.ws.service.loadBalancerIP }}
+  loadBalancerIP: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.ws.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . | quote }}
+  {{- end }}
+  {{- end }}
+  selector:
+    {{- include "ws.selectorLabels" . | nindent 4 }}
+  {{- end }}
