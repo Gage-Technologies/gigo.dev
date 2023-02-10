@@ -27,8 +27,9 @@ core:
     enable: true
     className: ""
     host: "gigo.gage.intranet"
-    wildcardHost: ""
-    annotations: {}
+    wildcardHost: "*.gigo.gage.intranet"
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 100m
     tls:
       enable: false
       secretName: ""
@@ -107,8 +108,8 @@ core:
       username: "gigo"
       password: "secret://gigo-gitea"
     ws_config:
-      host: gigo-ws-service.gigo.svc.cluster.local
-      port: 45246
+      - host: gigo-ws-service.gigo.svc.cluster.local
+        port: 45246
     derp:
       server:
         enable: true
