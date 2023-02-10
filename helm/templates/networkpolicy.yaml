@@ -1,0 +1,108 @@
+---
+# default block everything
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+# used for workspaces provisioned by the gigo-ws system
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gigo-workspace
+spec:
+  podSelector:
+    matchLabels:
+      gigo/workspace: "true"
+  policyTypes:
+  - Ingress
+  - Egress
+  egress:
+  - to:
+    # permit access to the internet but not internal access
+    - ipBlock:
+        cidr: "0.0.0.0/0"
+        # we only block internal access on development mode 
+        # because we need to be able to deploy on an intranet
+        {{- if not .Values.core.development_mode }}
+        except:
+        - 10.0.0.0/8
+        - 192.168.0.0/16
+        - 172.16.0.0/20
+        {{- end }}
+  - to:
+    - podSelector:
+        matchLabels:
+          # permit access to the core system so api calls can occur
+          gigo/component: core
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          # permit ingress from core system to enable tunnels
+          gigo/component: core
+
+---
+# user for gigo-ws system
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ws
+spec:
+  podSelector:
+    matchLabels:
+      gigo/component: core
+  policyTypes:
+  - Ingress
+  - Egress
+  # we need to permit access to the internet since the
+  # terraform will need to access the provider
+  egress:
+  - to:
+    - ipBlock:
+        cidr: "0.0.0.0/0"
+        # block access to internal nets
+
+        # we only block internal access on development mode 
+        # because we need to be able to deploy on an intranet
+        {{- if not .Values.core.development_mode }}
+        except:
+        - 10.0.0.0/8
+        - 192.168.0.0/16
+        - 172.16.0.0/20
+        {{- end }}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          # permit ingress from core system so that the
+          # workspace provisioner api can be called
+          gigo/component: core
+
+---
+# used for the gigo-core system
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: core
+spec:
+  podSelector:
+    matchLabels:
+      gigo/component: core
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: "0.0.0.0/0"
+  egress:
+  - to:
+    - ipBlock:
+        cidr: "0.0.0.0/0"

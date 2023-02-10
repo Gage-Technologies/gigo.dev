@@ -42,14 +42,14 @@ Common labels
 */}}
 {{- define "core.labels" -}}
 helm.sh/chart: {{ include "core.chart" . }}
-gigoComponent: core
+gigo/component: core
 app.kubernetes.io/name: {{ include "core.name" . }}
 {{ include "core.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-gigoComponent: core
+gigo/component: core
 {{- end }}
 
 {{/*
@@ -57,21 +57,21 @@ Common labels
 */}}
 {{- define "ws.labels" -}}
 helm.sh/chart: {{ include "core.chart" . }}
-gigoComponent: core
+gigo/component: ws
 app.kubernetes.io/name: {{ include "ws.name" . }}
 {{ include "ws.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-gigoComponent: ws
+gigo/component: ws
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "core.selectorLabels" -}}
-gigoComponent: core
+gigo/component: core
 app.kubernetes.io/name: {{ include "core.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -80,7 +80,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Selector labels
 */}}
 {{- define "ws.selectorLabels" -}}
-gigoComponent: ws
+gigo/component: ws
 app.kubernetes.io/name: {{ include "ws.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

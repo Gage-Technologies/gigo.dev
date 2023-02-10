@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+development_mode: false
+
 core:
   replicaCount: 3
 
@@ -59,7 +61,7 @@ core:
         - podAffinityTerm:
             labelSelector:
               matchExpressions:
-                - key: gigoComponent
+                - key: gigo/component
                   operator: In
                   values:
                     - "core"
@@ -299,7 +301,7 @@ ws:
         - podAffinityTerm:
             labelSelector:
               matchExpressions:
-                - key: gigoComponent
+                - key: gigo/component
                   operator: In
                   values:
                     - "ws"
