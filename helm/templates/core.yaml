@@ -34,7 +34,7 @@ spec:
       labels:
         {{- include "core.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.core.imagePullSecrets }}
+      {{- with .Values.core.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
