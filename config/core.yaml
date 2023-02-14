@@ -13,7 +13,7 @@ http_server_config:
   hostname: gigo.gage.intranet
   domain: gage.intranet
   address: "0.0.0.0"
-  port: "42069"
+  port: "80"
   development_mode: true
   git_webhook_secret: "secret://gigo-gitwebhook"
   stripe_webhook_secret: "secret://gigo-stripewebhook"

@@ -23,7 +23,7 @@ core:
     externalTrafficPolicy: Cluster
     loadBalancerIP: ""
     annotations: {}
-    port: 42069
+    port: 80
 
   ingress:
     enable: true
@@ -69,6 +69,8 @@ core:
           weight: 1
 
   config:
+    cluster: true
+    derp_mesh_key: secret://derp-mesh-key
     node_id: 0
     access_url: http://gigo.gage.intranet/
     logger_id: "prod"
@@ -85,8 +87,8 @@ core:
       hostname: gigo.gage.intranet
       domain: gage.intranet
       address: "0.0.0.0"
-      port: "42069"
-      development_mode: true
+      port: "80"
+      development_mode: false
       git_webhook_secret: "secret://gigo-gitwebhook"
       stripe_webhook_secret: "secret://gigo-stripewebhook"
     ti_config:
@@ -95,6 +97,11 @@ core:
       db_name: "gigo"
       db_user: "gigo"
       db_password: "secret://gigo-tidb"
+    etcd_config:
+      hosts:
+        - http://etcd:2379
+      username: gigo
+      password: "secret://gigo-etcd"
     elastic_config:
       elastic_nodes:
         - "elastic"
@@ -115,6 +122,12 @@ core:
     derp:
       server:
         enable: true
+    jetstream_config:
+      host: "jetstream"
+      port: 4222
+      username: "gigo"
+      password: "secret://gigo-jetstream"
+      max_pub_queue: 256
     meili_config:
       host: meili
       token: secret://gigo-meili

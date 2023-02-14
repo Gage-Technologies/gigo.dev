@@ -1,4 +1,5 @@
 ---
+{{- if not .Values.development_mode }}
 # default block everything
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -9,6 +10,7 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+{{- end }}
 
 ---
 # used for workspaces provisioned by the gigo-ws system
@@ -30,7 +32,7 @@ spec:
         cidr: "0.0.0.0/0"
         # we only block internal access on development mode 
         # because we need to be able to deploy on an intranet
-        {{- if not .Values.core.development_mode }}
+        {{- if not .Values.development_mode }}
         except:
         - 10.0.0.0/8
         - 192.168.0.0/16
@@ -71,7 +73,7 @@ spec:
 
         # we only block internal access on development mode 
         # because we need to be able to deploy on an intranet
-        {{- if not .Values.core.development_mode }}
+        {{- if not .Values.development_mode }}
         except:
         - 10.0.0.0/8
         - 192.168.0.0/16
