@@ -330,6 +330,12 @@ ws:
           weight: 1
 
   config:
+    cluster: true
+    etcd_config:
+      hosts:
+        - http://etcd
+      username: "user"
+      password: "secret://etcd"
     provisioner:
       # directory for the terraform binary
       terraform_dir: /tmp/tfbin
