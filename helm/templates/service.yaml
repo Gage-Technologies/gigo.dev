@@ -41,6 +41,7 @@ metadata:
 spec:
   type: {{ .Values.ws.service.type }}
   sessionAffinity: {{ .Values.ws.service.sessionAffinity }}
+  publishNotReadyAddresses: true
   ports:
     - name: "grpc"
       port: {{ .Values.ws.service.port }}
@@ -52,6 +53,9 @@ spec:
   {{- end }}
   {{- with .Values.ws.service.externalTrafficPolicy }}
   externalTrafficPolicy: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.ws.service.internalTrafficPolicy }}
+  internalTrafficPolicy: {{ . | quote }}
   {{- end }}
   {{- end }}
   selector:

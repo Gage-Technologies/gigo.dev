@@ -7,10 +7,13 @@ development_mode: false
 core:
   replicaCount: 3
 
+  dnsPolicy: ClusterFirst
+  dnsConfig: {}
+
   image:
-    repository: samulrich/gigo-core
-    pullPolicy: IfNotPresent
-    tag: "ws"
+    repository: gigodev/gigo-core
+    pullPolicy: Always
+    tag: "cluster"
     imagePullSecrets: []
 
   nodeSelector: {}
@@ -28,8 +31,9 @@ core:
   ingress:
     enable: true
     className: ""
-    host: "gigo.gage.intranet"
-    wildcardHost: "*.gigo.gage.intranet"
+    apiHost: "api.gage.intranet"
+    wsHost: "ws.gage.intranet"
+    wsWildcardHost: "*.ws.gage.intranet"
     annotations:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/affinity: cookie
@@ -137,6 +141,10 @@ core:
       username: "gigo"
       password: "secret://gigo-jetstream"
       max_pub_queue: 256
+    otel_config:
+      service_name: "gigo-core"
+      otel_exporter_otlp_endpoint: otel-exporter
+      insecure_mode: false
     meili_config:
       host: meili
       token: secret://gigo-meili
@@ -278,11 +286,20 @@ core:
 ws:
   replicaCount: 3
 
+  dnsPolicy: ClusterFirst
+  dnsConfig: {}
+
   image:
-    repository: samulrich/gigo-ws
-    pullPolicy: IfNotPresent
+    repository: gigodev/gigo-ws
+    pullPolicy: Always
     tag: "latest"
     imagePullSecrets: []
+
+  useCalicoGlobalPolicy: true
+  blockSubnets: true
+  blockedSubnets:
+    - 192.168.0.0/16
+    - 172.16.0.0/16
 
   nodeSelector: {}
   tolerations: {}
@@ -293,8 +310,8 @@ ws:
   service:
     enable: true
     type: ClusterIP
-    sessionAffinity: ClientIP
-    externalTrafficPolicy: Cluster
+    sessionAffinity: None
+    internalTrafficPolicy: Cluster
     loadBalancerIP: ""
     annotations: {}
     port: 45246

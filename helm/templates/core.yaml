@@ -34,6 +34,16 @@ spec:
       labels:
         {{- include "core.selectorLabels" . | nindent 8 }}
     spec:
+      # we set this really high since we need to ensure our workspace operations complete
+      terminationGracePeriodSeconds: 300
+      {{- with .Values.core.dnsPolicy }}
+      dnsPolicy: 
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.core.dnsConfig }}
+      dnsConfig: 
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.core.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -46,8 +56,6 @@ spec:
             {{- toYaml .Values.core.securityContext | nindent 12 }}
           image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.core.image.pullPolicy }}
-          # we set this really high since we need to ensure our workspace operations complete
-          terminationGracePeriodSeconds: 300
           args: ["-configPath", "/etc/gigo-core/config.yml"]
           ports:
             - name: http

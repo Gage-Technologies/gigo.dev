@@ -15,7 +15,7 @@ spec:
   {{- end }}
 
   rules:
-    - host: {{ .Values.core.ingress.host | quote }}
+    - host: {{ .Values.core.ingress.apiHost | quote }}
       http:
         paths:
           - path: /
@@ -26,8 +26,7 @@ spec:
                 port:
                   name: "http"
 
-    {{- if .Values.core.ingress.wildcardHost }}
-    - host: {{ include "core.ingressWildcardHost" . | quote }}
+    - host: {{ .Values.core.ingress.wsHost | quote }}
       http:
         paths:
           - path: /
@@ -37,7 +36,17 @@ spec:
                 name: gigo-core-service
                 port:
                   name: "http"
-    {{- end }}
+
+    - host: {{ .Values.core.ingress.wsWildcardHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gigo-core-service
+                port:
+                  name: "http"
 
   {{- if .Values.core.ingress.tls.enable }}
   tls:

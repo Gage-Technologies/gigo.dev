@@ -33,6 +33,8 @@ spec:
       labels:
         {{- include "ws.selectorLabels" . | nindent 8 }}
     spec:
+      # we set this really high since we need to ensure our workspace operations complete
+      terminationGracePeriodSeconds: 300
       serviceAccountName: ws-provisioner
       {{- with .Values.ws.image.imagePullSecrets }}
       imagePullSecrets:

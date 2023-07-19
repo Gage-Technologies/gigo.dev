@@ -1,23 +1,56 @@
 ---
-{{- if not .Values.development_mode }}
-# default block everything
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
+# we highly recommend that you use this calico global policy instead of the native k8 network policy
+# it's much more efficient and will scale better but it requires that you use calico as the CNI in your cluster
+{{- if .Values.ws.useCalicoGlobalPolicy }}
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
 metadata:
-  name: default-deny-all
+  name: gigo-workspace
 spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
+  # we just blacklist the whole namespace to keep the selector simple here
+  selector: projectcalico.org/namespace == 'gigo-ws-prov-plane'
+  types:
   - Egress
+  - Ingress
+  egress:
+  # optionally block access to subnets
+  {{- if .Values.ws.blockSubnets }}
+  - action: Deny
+    destination:
+      {{- with .Values.ws.blockedSubnets }}
+      nets: 
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- end }}
+  - action: Allow
+    destination:
+      selector: gigo/component == 'core'
+  - action: Allow
+    destination:
+      selector: projectcalico.org/namespace == 'gitea'
+  - action: Allow
+    destination:
+      nets:
+        - 0.0.0.0/0
+  ingress:
+    - action: Allow
+      source:
+        selector: gigo/component == 'core'
+    - action: Allow
+      source:
+        selector: projectcalico.org/namespace == 'gitea'
 {{- end }}
 
----
+# this is the native k8 network policy which can be pretty inefficient with high network latencies
+# if you're here because you're trying to debug a network issue, you can try using the calico network policy
+# but you need to be using calico as the CNI in your cluster
+{{- if not .Values.ws.useCalicoGlobalPolicy }}
 # used for workspaces provisioned by the gigo-ws system
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: gigo-workspace
+  namespace: gigo-ws-prov-plane
 spec:
   podSelector:
     matchLabels:
@@ -30,14 +63,17 @@ spec:
     # permit access to the internet but not internal access
     - ipBlock:
         cidr: "0.0.0.0/0"
-        # we only block internal access on development mode 
-        # because we need to be able to deploy on an intranet
-        {{- if not .Values.development_mode }}
-        except:
-        - 10.0.0.0/8
-        - 192.168.0.0/16
-        - 172.16.0.0/20
+        # optionally block access to subnets
+        {{- if .Values.ws.blockSubnets }}
+        {{- with .Values.ws.blockedSubnets }}
+        except: 
+          {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- end }}
+  - to:
+      - namespaceSelector:
+        matchLabels:
+          name: gitea
   - to:
     - podSelector:
         matchLabels:
@@ -45,10 +81,15 @@ spec:
           gigo/component: core
   ingress:
   - from:
+    # everything is in the main namespace so we need to permit cross namespace access
+    - namespaceSelector:
+      matchLabels:
+        name: gigo-core
     - podSelector:
         matchLabels:
           # permit ingress from core system to enable tunnels
           gigo/component: core
+{{- end }}
 
 ---
 # user for gigo-ws system
@@ -69,16 +110,6 @@ spec:
   - to:
     - ipBlock:
         cidr: "0.0.0.0/0"
-        # block access to internal nets
-
-        # we only block internal access on development mode 
-        # because we need to be able to deploy on an intranet
-        {{- if not .Values.development_mode }}
-        except:
-        - 10.0.0.0/8
-        - 192.168.0.0/16
-        - 172.16.0.0/20
-        {{- end }}
   ingress:
   - from:
     - podSelector:
@@ -108,3 +139,27 @@ spec:
   - to:
     - ipBlock:
         cidr: "0.0.0.0/0"
+
+---
+# used for the internal gitea system
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+        - ipBlock:
+            cidr: 192.168.1.0/24
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+        - ipBlock:
+            cidr: 192.168.1.0/24
