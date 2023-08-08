@@ -296,6 +296,7 @@ ws:
     imagePullSecrets: []
 
   useCalicoGlobalPolicy: true
+  permittedSubnets: false
   blockSubnets: true
   blockedSubnets:
     - 192.168.0.0/16

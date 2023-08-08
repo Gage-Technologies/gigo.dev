@@ -13,6 +13,15 @@ spec:
   - Egress
   - Ingress
   egress:
+  # optionally permit access to subnets
+  {{- if .Values.ws.permitSubnets }}
+  - action: Allow
+    destination:
+      {{- with .Values.ws.permittedSubnets }}
+      nets: 
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- end }}
   # optionally block access to subnets
   {{- if .Values.ws.blockSubnets }}
   - action: Deny
