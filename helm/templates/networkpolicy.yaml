@@ -31,12 +31,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
   {{- end }}
+  - action: Deny
+    destination:
+      selector: projectcalico.org/namespace == 'gigo-ws-prov-plane'
   - action: Allow
     destination:
       selector: gigo/component == 'core'
-  - action: Allow
+  - action: Deny
     destination:
-      selector: projectcalico.org/namespace == 'gitea'
+      selector: projectcalico.org/namespace == 'gigo-ws-prov-plane'
   - action: Allow
     destination:
       nets:
@@ -45,9 +48,6 @@ spec:
     - action: Allow
       source:
         selector: gigo/component == 'core'
-    - action: Allow
-      source:
-        selector: projectcalico.org/namespace == 'gitea'
 {{- end }}
 
 # this is the native k8 network policy which can be pretty inefficient with high network latencies
@@ -79,10 +79,6 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- end }}
-  - to:
-      - namespaceSelector:
-        matchLabels:
-          name: gitea
   - to:
     - podSelector:
         matchLabels:
@@ -148,27 +144,3 @@ spec:
   - to:
     - ipBlock:
         cidr: "0.0.0.0/0"
-
----
-# used for the internal gitea system
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: gitea
-  namespace: gitea
-spec:
-  policyTypes:
-    - Ingress
-    - Egress
-  ingress:
-    - from:
-        - ipBlock:
-            cidr: 10.0.0.0/8
-        - ipBlock:
-            cidr: 192.168.1.0/24
-  egress:
-    - to:
-        - ipBlock:
-            cidr: 10.0.0.0/8
-        - ipBlock:
-            cidr: 192.168.1.0/24
