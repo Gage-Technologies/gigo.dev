@@ -17,6 +17,7 @@
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
 - [Support](#support)
+- [Security](#security)
 - [License](#license)
 
 ---
@@ -74,6 +75,14 @@ We welcome contributions from the community. For guidelines and more information
 ## Support
 
 For any issues or queries, reach out to us at [contact@gigo.dev](mailto:contact@gigo.dev) or join our [Discord server](https://discord.gg/syShS5as).
+
+---
+
+---
+
+### Security
+
+If you find a security vulnerability, do not open a Github Issue. Send an email to [sam@gigo.dev](mailto:sam@gigo.dev). The vulnerability will be patched and deployed then we will announce the disclosure and give you proper credt.
 
 ---
 
