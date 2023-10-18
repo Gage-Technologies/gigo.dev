@@ -78,8 +78,6 @@ For any issues or queries, reach out to us at [contact@gigo.dev](mailto:contact@
 
 ---
 
----
-
 ### Security
 
 If you find a security vulnerability, do not open a Github Issue. Send an email to [sam@gigo.dev](mailto:sam@gigo.dev). The vulnerability will be patched and deployed then we will announce the disclosure and give you proper credt.
