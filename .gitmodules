@@ -1,0 +1,12 @@
+[submodule "ws"]
+	path = ws
+	url = https://github.com/gage-technologies/gigo-ws
+[submodule "core"]
+	path = core
+	url = https://github.com/gage-technologies/gigo-core
+[submodule "lib"]
+	path = lib
+	url = https://github.com/gage-technologies/gigo-lib
+[submodule "ui"]
+	path = ui
+	url = https://github.com/gage-technologies/gigo-ui
