@@ -1,6 +1,6 @@
 <div align="center">
   <img src="images/logo.png" alt="Gigo Logo" width="50" align="left" syle="padding-bottom: 15px;"/>
-  <h1>Gigo: Your Ultimate Learn-to-Code Platform</h1>
+  <h1>Gigo: Works On Our Machine</h1>
 </div>
 
 ![Gigo Platform Preview](images/gigo-halloween-screenshot.png)
