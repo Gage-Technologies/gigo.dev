@@ -28,7 +28,7 @@
 
 - Fully containerized development environments that you can spin up in seconds.
 - Pre-configured for various programming languages like Golang, Python, Java, Rust, and TypeScript.
-- Built-in support for Kubernetes, Rancher, Harvester, Etcd, Nats and more.
+- Built-in support for Docker, Docker Compose, [Web Based VSCode](https://github.com/coder/code-server), and more!
 
 ### Open Community
 
@@ -87,6 +87,19 @@ If you find a security vulnerability, do not open a Github Issue. Send an email 
 ## License
 
 Gigo is licensed under the [AGPLv3 License](LICENSE).
+
+---
+
+### Attributions
+
+A special thanks to the teams that built some of the foundations for this project. We'll be adding to this list as we complete the OSS effort. This is by no means a complete list.
+
+- Coder: The basis for Gigo's workspace system and much of the core features were inspired by and derived from their work!
+  - [Web Based VSCode](https://github.com/coder/code-server): A full web based VSCode editor
+  - [Coder v2](https://github.com/coder/coder): On-Prem Cloud Development Environments using Terraform to deploy the craziest environments you can think of
+
+- Tailscale: Tailscale's open source networking software is used to provide secure networking from `gigo-core` servers to DevSpaces provisioned in the cloud!
+  - [tailscale](https://github.com/tailscale/tailscale): Secure networking made easy
 
 ---
 
