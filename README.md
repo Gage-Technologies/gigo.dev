@@ -101,6 +101,15 @@ A special thanks to the teams that built some of the foundations for this projec
 - Tailscale: Tailscale's open source networking software is used to provide secure networking from `gigo-core` servers to DevSpaces provisioned in the cloud!
   - [tailscale](https://github.com/tailscale/tailscale): Secure networking made easy
 
+- Terraform: Terraform is used to provisione resource in kubernets for workspaces (maybe even VM's some day)
+  - [terraform](https://github.com/hashicorp/terraform): Terraform enables you to safely and predictably create, change, and improve infrastructure. It is an open source tool that codifies APIs into declarative configuration files that can run anywhere.
+
+- Meilisearch: Meilisearch is used to power search functionality throughout gigo including the main search bar, tag search and so much more
+  - [meilisearch](https://github.com/meilisearch/meilisearch): Super fast, lightweight, search engine built in rust
+
+- Gitea: Gitea is the git backend that we use to persist codebases and manage their version across Gigo
+  - [gitea](https://github.com/go-gitea/gitea): Git with a cup of tea, painless self-hosting
+
 ---
 
 <div align="center">
