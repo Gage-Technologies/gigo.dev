@@ -101,6 +101,9 @@ A special thanks to the teams that built some of the foundations for this projec
 - Tailscale: Tailscale's open source networking software is used to provide secure networking from `gigo-core` servers to DevSpaces provisioned in the cloud!
   - [tailscale](https://github.com/tailscale/tailscale): Secure networking made easy
 
+- Gitea: Gitea is the git backend that we use to persist codebases and manage their version across Gigo
+  - [gitea](https://github.com/go-gitea/gitea): Git with a cup of tea, painless self-hosting
+
 ---
 
 <div align="center">
