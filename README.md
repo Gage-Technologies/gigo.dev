@@ -74,7 +74,7 @@ We welcome contributions from the community. For guidelines and more information
 
 ## Support
 
-For any issues or queries, reach out to us at [contact@gigo.dev](mailto:contact@gigo.dev) or join our [Discord server](https://discord.gg/syShS5as).
+For any issues or queries, reach out to us at [contact@gigo.dev](mailto:contact@gigo.dev) or join our [Discord server](https://discord.gg/2KJKa8AxJg).
 
 ---
 
