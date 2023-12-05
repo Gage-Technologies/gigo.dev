@@ -98,8 +98,9 @@ A special thanks to the teams that built some of the foundations for this projec
   - [Web Based VSCode](https://github.com/coder/code-server): A full web based VSCode editor
   - [Coder v2](https://github.com/coder/coder): On-Prem Cloud Development Environments using Terraform to deploy the craziest environments you can think of
 
-- Tailscale: Tailscale's open source networking software is used to provide secure networking from `gigo-core` servers to DevSpaces provisioned in the cloud!
-  - [tailscale](https://github.com/tailscale/tailscale): Secure networking made easy
+- OpenZiti: Ziti's open source overlay mesh network is used to provide secure networking from `gigo-core` servers to DevSpaces provisioned in the cloud! By using ziti we were able to massively improve the reliability of workspace connections and massively simplify the code surrounding it. When a DevSpace is launched the agent onboard begins listening over the ziti net and fowards traffic from the `gigo-core` proxy system to the local port on the DevSpace. If you're curious to see how, checkout the `lib/zitimesh` folder.
+  - [OpenZiti](https://openziti.io/): Open Source Zero Trust Networking
+  - [OpenZiti Github](https://github.com/openziti)
 
 - Terraform: Terraform is used to provisione resource in kubernets for workspaces (maybe even VM's some day)
   - [terraform](https://github.com/hashicorp/terraform): Terraform enables you to safely and predictably create, change, and improve infrastructure. It is an open source tool that codifies APIs into declarative configuration files that can run anywhere.
